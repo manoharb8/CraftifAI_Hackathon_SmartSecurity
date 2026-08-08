@@ -1,55 +1,43 @@
-# led_bringup — Factory Release
+# CraftifAI Hackathon – Smart Security
 
-## Quick Start
+An ESP32-C3 based smart security system developed and validated using FirmGen.
 
-1. Extract this ZIP
-2. Connect your esp32c3 board via USB
-3. Run the flash script:
+The current release provides a working ESP32-C3 firmware package for the security system, with the onboard RGB LED and HC-SR501 PIR motion sensor used for local motion indication.
 
-### Windows
-```
-flash.bat COM3
-```
+## Hardware
 
-### Linux / macOS
-```bash
-bash flash.sh /dev/ttyUSB0
-```
+- ESP32-C3-DevKitM-1 v1.6
+- HC-SR501 PIR motion sensor
+- Onboard addressable RGB LED
 
-Replace the port with your actual serial port.
+## Pin Configuration
 
-## Manual Flash Command
+| Component | ESP32-C3 Pin |
+|---|---|
+| HC-SR501 PIR OUT | GPIO 4 |
+| Onboard RGB LED | GPIO 8 |
 
-If you prefer to run esptool directly:
+## System Behavior
 
-```bash
-esptool.py --chip esp32c3 --port PORT --baud 460800 write_flash \
-  --flash_mode dio --flash_size 4MB --flash_freq 80m \
-  0x0 firmware/bootloader.bin \
-  0x8000 firmware/partition-table.bin \
-  0x20000 firmware/led_bringup.bin
-```
+The PIR sensor operates with active-high logic.
 
-## Firmware Details
+- PIR LOW → RGB LED = Cyan
+- PIR HIGH → RGB LED = Red
+- Red remains active while the PIR output remains HIGH
+- When the PIR output returns LOW → RGB LED = Cyan
 
-| Setting    | Value        |
-|------------|--------------|
-| Chip       | `esp32c3`     |
-| Flash mode | `dio` |
-| Flash size | `4MB` |
-| Flash freq | `80m` |
+The PIR state is polled periodically using a non-blocking FreeRTOS task.
 
-## Prerequisites
+## Firmware Architecture
 
-- **esptool** must be installed and on your PATH
-  - Install via pip: `pip install esptool`
-  - Or download standalone: https://github.com/espressif/esptool/releases
-- USB drivers for your board (CP210x, CH340, FTDI, etc.)
-
-## Files
-
-- `flash_config.json` — Machine-readable flash configuration
-- `firmware/` — Binary firmware files
-- `flash.bat` — Windows flash script
-- `flash.sh` — Linux/macOS flash script
-- `SHA256SUMS.txt` — File integrity checksums
+```text
+ESP32-C3
+│
+├── HC-SR501 PIR
+│     └── GPIO 4
+│
+├── Application Logic
+│     └── PIR state monitoring
+│
+└── Onboard RGB LED
+      └── GPIO 8

@@ -1,60 +1,55 @@
-# CraftifAI Hackathon – Smart Security
+# led_bringup — Factory Release
 
-An ESP32-C3 based smart security system that detects motion using an HC-SR501 PIR sensor and provides immediate visual alerts through the onboard RGB LED.
+## Quick Start
 
-## Hardware
+1. Extract this ZIP
+2. Connect your esp32c3 board via USB
+3. Run the flash script:
 
-- ESP32-C3-DevKitM-1 v1.6
-- HC-SR501 PIR motion sensor
-- Onboard RGB LED
+### Windows
+```
+flash.bat COM3
+```
 
-## Pin Configuration
+### Linux / macOS
+```bash
+bash flash.sh /dev/ttyUSB0
+```
 
-| Component | ESP32-C3 Pin |
-|---|---|
-| HC-SR501 OUT | GPIO 4 |
-| Onboard RGB LED | GPIO 8 |
+Replace the port with your actual serial port.
 
-## Working
+## Manual Flash Command
 
-- No motion → RGB LED shows cyan
-- Motion detected → RGB LED shows red
-- LED remains red while PIR output is HIGH
-- When motion clears → LED returns to cyan
-- PIR is polled every 50 ms
-- Local security operation does not depend on MQTT or Telegram
+If you prefer to run esptool directly:
 
-## Development
+```bash
+esptool.py --chip esp32c3 --port PORT --baud 460800 write_flash \
+  --flash_mode dio --flash_size 4MB --flash_freq 80m \
+  0x0 firmware/bootloader.bin \
+  0x8000 firmware/partition-table.bin \
+  0x20000 firmware/led_bringup.bin
+```
 
-The firmware was developed and validated using **FirmGen** with ESP-IDF.
+## Firmware Details
 
-The project includes:
-- Board bring-up
-- PIR integration
-- RGB LED control
-- Firmware topology
-- Build and flash validation
-- Serial monitoring
-- Doxygen documentation
+| Setting    | Value        |
+|------------|--------------|
+| Chip       | `esp32c3`     |
+| Flash mode | `dio` |
+| Flash size | `4MB` |
+| Flash freq | `80m` |
 
-## Project Status
+## Prerequisites
 
-✅ ESP32-C3 board verified  
-✅ RGB LED verified  
-✅ PIR motion detection verified  
-✅ Motion alert verified  
-✅ Motion recovery verified  
-✅ Firmware build verified  
-✅ Firmware flash verified  
+- **esptool** must be installed and on your PATH
+  - Install via pip: `pip install esptool`
+  - Or download standalone: https://github.com/espressif/esptool/releases
+- USB drivers for your board (CP210x, CH340, FTDI, etc.)
 
-## Future Enhancements
+## Files
 
-- Telegram motion alerts
-- Laptop security dashboard
-- Motion event history
-- Remote monitoring
-- Additional intelligent security features
-
-## Team
-
-CraftifAI Hackathon Project
+- `flash_config.json` — Machine-readable flash configuration
+- `firmware/` — Binary firmware files
+- `flash.bat` — Windows flash script
+- `flash.sh` — Linux/macOS flash script
+- `SHA256SUMS.txt` — File integrity checksums

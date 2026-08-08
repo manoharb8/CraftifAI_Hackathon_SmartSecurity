@@ -1,0 +1,21 @@
+{
+  "project_name": "led_bringup",
+  "chip": "esp32c3",
+  "flash_mode": "dio",
+  "flash_size": "4MB",
+  "flash_freq": "80m",
+  "flash_files": [
+    {
+      "offset": "0x0",
+      "file": "firmware/bootloader.bin"
+    },
+    {
+      "offset": "0x8000",
+      "file": "firmware/partition-table.bin"
+    },
+    {
+      "offset": "0x20000",
+      "file": "firmware/led_bringup.bin"
+    }
+  ]
+}
